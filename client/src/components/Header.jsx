@@ -9,7 +9,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Auth from '../utils/auth';
 import SignupModal from './SignupModal';
 import LoginModal from './LoginModal';
-import VerifyEmailModal from './verifyEmailModal';
+import VerifyEmailModal from './VerifyEmailModal';
 import '../styles/Header.css'
 
 
