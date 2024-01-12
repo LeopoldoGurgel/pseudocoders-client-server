@@ -8,7 +8,7 @@ const { authMiddleware } = require('./utils/auth');
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 const app = express();
 const server = new ApolloServer({
   typeDefs,
@@ -36,26 +36,7 @@ const startApolloServer = async () => {
       });
     }
   
-     /*
-     this block of code is for payment path using stripe method. 
-     I intend to add a donation option in the future.
 
-    app.post('/payment', async (req, res) => {
-      try {
-        const { items, currency } = req.body;
-      // Create a Payment Intent
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: calculateTotalAmount(items),
-        currency: 'cad',
-        source: token.id
-      });
-      res.json({ clientSecret: paymentIntent.client_secret });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ error: 'Could not create payment intent' });
-    }
-    });
-    */
     
     db.once('open', () => {
       app.listen(PORT, () => {

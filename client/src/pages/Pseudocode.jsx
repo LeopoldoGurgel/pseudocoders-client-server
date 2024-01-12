@@ -36,6 +36,7 @@ export default function Pseudocode({handlePageChange, post}){
     const [postData, setPostData] = useState(null);
     const [showComments, setShowComments] = useState(false);
     const [showCommentForm, setShowCommentForm] = useState(false);
+    const [ error, setError ] = useState('');
  
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -126,7 +127,8 @@ export default function Pseudocode({handlePageChange, post}){
             setCommentInputValue('')
            
         }catch(error){
-            console.log('Error: ', error.message)
+            console.log('Error: ', error.message);
+            setError(error.message);
         }
     }
   
@@ -204,6 +206,7 @@ export default function Pseudocode({handlePageChange, post}){
                         <button
                         className="btn btn-dark"
                         onClick={handleSendComment} >Send Comment</button>
+                        {error && <p className="text-danger p-2">{error}</p>}
                     </form>)}
 
                 {showComments && (<div className="box" id='postCommentForm'>

@@ -5,7 +5,7 @@ import Container from './components/Container';
 
 // Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
-  uri: 'https://pseudocoders-server-c1afe736ec03.herokuapp.com/graphql',
+  uri: '/graphql',
 });
 
 // Construct request middleware that will attach the JWT token to every request as an `authorization` header

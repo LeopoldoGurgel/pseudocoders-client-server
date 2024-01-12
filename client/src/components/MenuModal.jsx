@@ -1,48 +1,52 @@
-// TODO : create header component. That should have the logo and a navbar
-
-// navbar should have these links: About Me, Portfolio, Contact, Resume
-// The title corresponding to the current section is highlighted
-
-// when the portfolio is loaded for the first time, then the about me title and section are selected by default
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Auth from '../utils/auth';
+import {Modal} from 'react-bootstrap';
 import SignupModal from './SignupModal';
 import LoginModal from './LoginModal';
 import VerifyEmailModal from './VerifyEmailModal';
-import '../styles/Header.css'
 
+const MenuModal = ({
+    show, 
+    handleClose,
+    handlePageChange,
+    currentPage,
+    isAboutOpen,
+    isLoginOpen,
+    showLoginModal,
+    showSignupModal,
+    showVerifyModal,
+    accOpen,
+    toggleLoginModal,
+    toggleSignupModal,
+    toggleShowVerifyModal,
+    closeVerifyModal,
+    closeSignupModal,
+    closeLoginModal,
+    toggleLogin,
+    toggleAcc,
+    toggleAbout, 
+    closeAbout,
+    isMenuOpen,
+    userEmail,
+    setAccOpen,
+    setIsAboutOpen,
+    setLoginOpen,
+    setShowLoginModal,
+    setShowSignupModal,
+    setShowVerifyModal
+}) => {
 
-
-function Header({currentPage, handlePageChange, username, userEmail}) {
-
-    const [isAboutOpen, setIsAboutOpen] = useState(false);
-    const [isMenuOpen, setMenuOpen] = useState(false);
-    const [isLoginOpen, setLoginOpen] = useState(false);
-    const [showLoginModal, setShowLoginModal] = useState(false);
-    const [showSignupModal, setShowSignupModal] = useState(false);
-    const [showVerifyModal, setShowVerifyModal] = useState(false);
-    const [accOpen, setAccOpen] = useState(false);
-
+    setAccOpen(false);
+    setIsAboutOpen(false);
+    setLoginOpen(false);
+    setShowLoginModal(false);
+    setShowSignupModal(false);
+    setShowVerifyModal(false);
+    
     const aboutRef = useRef(null);
     const loginRef = useRef(null);
     const menuRef = useRef(null);
     const accRef = useRef(null);
-    
-    const toggleLoginModal = () => setShowLoginModal(!showLoginModal);
-    const toggleSignupModal = () => setShowSignupModal(!showSignupModal);
-    const toggleShowVerifyModal = () => setShowVerifyModal(!showVerifyModal);
-    const closeVerifyModal = () => setShowVerifyModal(false);    
-    const closeSignupModal = () => setShowSignupModal(false);
-    const closeLoginModal = () => setShowLoginModal(false);
-    const toggleLogin = () => setLoginOpen(!isLoginOpen);
-    const closeLogin = () => setLoginOpen(false);
-    const toggleAcc = () => setAccOpen(!accOpen);
-    const closeAcc = () => setAccOpen(false);
-    const toggleMenu = () => setMenuOpen(!isMenuOpen);
-    const closeMenu = () => setMenuOpen(false);
-    const toggleAbout = () => setIsAboutOpen(!isAboutOpen);
-    const closeAbout = () => setIsAboutOpen(false); 
 
     useEffect(()=>{
         const handleOutsideClick = (event) => {
@@ -52,7 +56,10 @@ function Header({currentPage, handlePageChange, username, userEmail}) {
             if(loginRef.current && !loginRef.current.contains(event.target)){
                 closeLogin();
             }
-            if(menuRef.current && !menuRef.current.contains(event.target)){
+            if (
+                (menuRef.current && !menuRef.current.contains(event.target)) &&
+                !(event.target.tagName === 'A' && event.target.closest('#menu'))
+            ) {
                 closeMenu();
             }
             if(accRef.current && !accRef.current.contains(event.target)){
@@ -65,7 +72,7 @@ function Header({currentPage, handlePageChange, username, userEmail}) {
         return ()=> {
             document.body.removeEventListener('click', handleOutsideClick);
         }
-    })   
+    }, [isMenuOpen])   
 
     const user = Auth.getProfile();
     
@@ -75,16 +82,15 @@ function Header({currentPage, handlePageChange, username, userEmail}) {
     event.preventDefault();
     Auth.logout();
     };
-
+    
 
     return (
-        <div className='fluid pt-4 pe-4 ps-4  mb-3 border-bottom border-secondary'>
-            <div className="row mb-3">
-                <div className='col-8 col-md-4 col-xl-2' >                                     
-                        <img id='logo' className='img-fluid rounded' src="images/pseudocoderLogoCut.png" alt="Pseudocoder Logo" />
-                </div>
-                                
-                <ul id='menu' ref={menuRef} className= {window.innerWidth > 992 ? 'nav nav-tabs col-lg-8 col-10 justify-content-end' :'nav bg-secondary text-decoration-none text-white flex-column float-right justify-content-end collapse'} {...(window.innerWidth <= 992 && {'data-bs-toggle':"collapse", 'data-bs-target':"#menu"})}>
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Menu</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <ul id='menu' className='nav nav-tabs col-lg-8 col-10 justify-content-end'>
                     <li className="nav-item">
                         <a href="#home" 
                         onClick={() => handlePageChange("Home")}
@@ -208,37 +214,9 @@ function Header({currentPage, handlePageChange, username, userEmail}) {
                         
                     )}
                 </ul>
-
-                        
-                {window.innerWidth <= 992 && <button className="btn btn-dark col" 
-                type="button"
-                id='menuTogglerBtn'
-                onClick={()=>{toggleMenu()}} 
-                data-bs-toggle="collapse" 
-                data-bs-target="#menu" 
-                aria-controls="menu" 
-                aria-expanded="false" 
-                aria-label="Toggle navigation">
-                {isMenuOpen ? 'Close Menu' : 'Menu'}
-                </button>}                
-
-            {/* row */}
-            </div > 
-            
-            {Auth.loggedIn() && <div>
-                {!user?.data.verified && <div className='alert alert-danger'>
-                    <p>You cannot leave comments because your email has not been verified.</p>
-                    <p>To verify your account click <a className='text-primary' onClick={() => toggleShowVerifyModal()}>here</a></p>
-                    <VerifyEmailModal show={showVerifyModal} handleClose={closeVerifyModal} />
-                </div>}
-            </div>}
-            
-            
-        {/* container */}
-        </div>
+            </Modal.Body>
+        </Modal>
     )
-
-    
 };
 
-export default Header;
+export default MenuModal;

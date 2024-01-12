@@ -216,7 +216,7 @@ const resolvers = {
           const user = await User.findById(context.user._id);
 
           if(!user || !user.verified) {
-            throw new GraphQLError('Only verified users can leave comments.');
+            throw new GraphQLError('Only verified accounts can leave comments.');
             return
           }
 
@@ -237,7 +237,7 @@ const resolvers = {
 
           return comment;
         }
-        throw AuthenticationError;
+        throw new GraphQLError('Only verified accounts can leave comments.');
     },
     removeComment: async (parent, { postId, commentId }, context) => {
         if (context.user) {
@@ -270,7 +270,7 @@ const resolvers = {
       const user = await User.findById(context.user._id);
 
       if(!user || !user.verified) {
-        throw new GraphQLError('Only verified users can leave comments.');
+        throw new GraphQLError('Only verified accounts can leave comments.');
         return
       }
 
@@ -291,7 +291,7 @@ const resolvers = {
 
         return comment;
     }
-    throw AuthenticationError;
+    throw new GraphQLError('Only verified accounts can leave comments.');
     },
     removeReply: async (parent, { COMMENT_Id, commentId }, context) => {
         if (context.user) {
